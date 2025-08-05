@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subarno's Blog</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background: #007acc;
+      color: white;
+      padding: 1rem 2rem;
+    }
+    header h1 {
+      margin: 0;
+    }
+    nav {
+      margin-top: 0.5rem;
+    }
+    nav a {
+      color: white;
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    article {
+      margin-bottom: 2rem;
+    }
+    article h2 {
+      margin-bottom: 0.5rem;
+      color: #007acc;
+    }
+    article p {
+      margin-bottom: 1rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #ddd;
+      margin-top: 2rem;
+    }
+    form {
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem 0;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 0.75rem;
+      padding: 0.5rem 1rem;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Subarno's Blog</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <section id="post-form-section">
+      <h2>Create a New Blog Post</h2>
+      <form id="post-form">
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" required />
+
+        <label for="post-content">Content</label>
+        <textarea id="post-content" required></textarea>
+
+        <button type="submit">Publish Post</button>
+      </form>
+    </section>
+
+    <section id="posts-section">
+      <h2>Blog Posts</h2>
+      <div id="posts-list">
+        <!-- Blog posts will appear here dynamically -->
+      </div>
+    </section>
+  </main>
+  <footer>
+    &copy; 2024 Subarno Saha. All rights reserved.
+  </footer>
+
+  <script>
+    // Utility to escape HTML to prevent XSS (basic)
+    function escapeHtml(text) {
+      var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Load posts from localStorage
+    function loadPosts() {
+      const postsJSON = localStorage.getItem('blogPosts');
+      return postsJSON ? JSON.parse(postsJSON) : [];
+    }
+
+    // Save posts to localStorage
+    function savePosts(posts) {
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+    }
+
+    // Render posts to page
+    function renderPosts() {
+      const postsList = document.getElementById('posts-list');
+      postsList.innerHTML = '';
+      const posts = loadPosts();
+      if (posts.length === 0) {
+        postsList.innerHTML = '<p>No posts yet. Start by creating one above!</p>';
+        return;
+      }
+      posts.forEach((post, index) => {
+        const article = document.createElement('article');
+        const h2 = document.createElement('h2');
+        h2.innerText = post.title;
+        const p = document.createElement('p');
+        p.innerText = post.content;
+        article.appendChild(h2);
+        article.appendChild(p);
+        postsList.appendChild(article);
+      });
+    }
+
+    // Handle form submission
+    document.getElementById('post-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const titleInput = document.getElementById('post-title');
+      const contentInput = document.getElementById('post-content');
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      if (!title || !content) {
+        alert('Please fill in both title and content');
+        return;
+      }
+      const posts = loadPosts();
+      posts.unshift({title: title, content: content});
+      savePosts(posts);
+      renderPosts();
+      titleInput.value = '';
+      contentInput.value = '';
+    });
+
+    // Initial render
+    renderPosts();
+  </script>
+</body>
+</html>
