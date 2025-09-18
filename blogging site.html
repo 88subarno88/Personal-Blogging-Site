@@ -128,7 +128,7 @@
   </footer>
 
   <script>
-    // Utility to escape HTML to prevent XSS (basic)
+    
     function escapeHtml(text) {
       var map = {
         '&': '&amp;',
@@ -140,18 +140,18 @@
       return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
-    // Load posts from localStorage
+  
     function loadPosts() {
       const postsJSON = localStorage.getItem('blogPosts');
       return postsJSON ? JSON.parse(postsJSON) : [];
     }
 
-    // Save posts to localStorage
+
     function savePosts(posts) {
       localStorage.setItem('blogPosts', JSON.stringify(posts));
     }
 
-    // Render posts to page
+  
     function renderPosts() {
       const postsList = document.getElementById('posts-list');
       postsList.innerHTML = '';
@@ -172,7 +172,7 @@
       });
     }
 
-    // Handle form submission
+    
     document.getElementById('post-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const titleInput = document.getElementById('post-title');
@@ -196,3 +196,4 @@
   </script>
 </body>
 </html>
+
